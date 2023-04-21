@@ -9,11 +9,14 @@ import static org.hamcrest.core.Is.is;
 
 public class UserDaoTests {
     @Test
-    public void getJeju() throws SQLException, ClassNotFoundException {
+    public void get() throws SQLException, ClassNotFoundException {
         Long id = 1l;
         String name = "김민재";
         String password = "1111";
-        UserDao userDao = new JejuUserDao();
+
+        ConnectionMaker connectionMaker = new JejuConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
+
         User user = userDao.get(id);
         assertThat(user.getId(), is(id));
         assertThat(user.getName(), is(name));
@@ -21,14 +24,15 @@ public class UserDaoTests {
     }
 
     @Test
-    public void insertJeju() throws SQLException, ClassNotFoundException {
+    public void insert() throws SQLException, ClassNotFoundException {
         String name = "Aiden";
         String password = "1234";
         User user = new User();
         user.setName(name);
         user.setPassword(password);
 
-        UserDao userDao = new JejuUserDao();
+        ConnectionMaker connectionMaker = new JejuConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
         userDao.insert(user);
 
         User insertedUser = userDao.get(user.getId());
@@ -43,7 +47,10 @@ public class UserDaoTests {
         Long id = 1l;
         String name = "김민재";
         String password = "1111";
-        UserDao userDao = new HallaUserDao();
+
+        ConnectionMaker connectionMaker = new HallaConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
+
         User user = userDao.get(id);
         assertThat(user.getId(), is(id));
         assertThat(user.getName(), is(name));
@@ -58,7 +65,9 @@ public class UserDaoTests {
         user.setName(name);
         user.setPassword(password);
 
-        UserDao userDao = new HallaUserDao();
+        ConnectionMaker connectionMaker = new HallaConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
+
         userDao.insert(user);
 
         User insertedUser = userDao.get(user.getId());
