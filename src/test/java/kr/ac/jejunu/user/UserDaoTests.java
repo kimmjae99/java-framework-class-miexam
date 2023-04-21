@@ -1,6 +1,9 @@
 package kr.ac.jejunu.user;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
 
@@ -9,17 +12,19 @@ import static org.hamcrest.core.Is.is;
 
 public class UserDaoTests {
 
+    private static UserDao userDao;
+
+    @BeforeAll
+    public static void setup(){
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(DaoFactory.class);
+
+        userDao = applicationContext.getBean("getUserDao", UserDao.class);
+    }
     @Test
     public void get() throws SQLException, ClassNotFoundException {
         Long id = 1l;
         String name = "김민재";
         String password = "1111";
-
-//        ConnectionMaker connectionMaker = new JejuConnectionMaker();
-//        UserDao userDao = new UserDao(connectionMaker);
-
-        DaoFactory daoFactory = new DaoFactory();
-        UserDao userDao = daoFactory.getUserDao();
 
         User user = userDao.get(id);
         assertThat(user.getId(), is(id));
@@ -35,8 +40,6 @@ public class UserDaoTests {
         user.setName(name);
         user.setPassword(password);
 
-        DaoFactory daoFactory = new DaoFactory();
-        UserDao userDao = daoFactory.getUserDao();
         userDao.insert(user);
 
         User insertedUser = userDao.get(user.getId());
