@@ -11,10 +11,10 @@ public class UserDaoTests {
     @Test
     public void get() throws SQLException, ClassNotFoundException {
         Long id = 1l;
-        String name = "hulk";
-        String password = "1234";
+        String name = "김민재";
+        String password = "1111";
         UserDao userDao = new UserDao();
-        User user = userDao.findById(id);
+        User user = userDao.get(id);
         assertThat(user.getId(), is(id));
         assertThat(user.getName(), is(name));
         assertThat(user.getPassword(), is(password));
