@@ -1,6 +1,5 @@
 package kr.ac.jejunu.user;
 
-import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDao {
@@ -12,37 +11,27 @@ public class UserDao {
     }
 
     public User get(Long id) throws ClassNotFoundException, SQLException {
-        StatementStrategy statementStrategy = new GetStatementStrategy(id);
-        return jdbcContext.get(statementStrategy);
+        Object[] params = new Object[]{id};
+        String sql = "select id, name, password from userinfo where id = ?";
+        return jdbcContext.get(params, sql);
     }
 
     public void insert(User user) throws ClassNotFoundException, SQLException {
-        StatementStrategy statementStrategy = new InsertStatementStrategy(user);
-        jdbcContext.insert(user, statementStrategy);
+        Object[] params = new Object[] { user.getName(), user.getPassword()};
+        String sql = "insert into userinfo (name, password) values (?, ?)";
+        jdbcContext.insert(user, params, sql);
     }
 
     public void update(User user) throws SQLException {
-        StatementStrategy statementStrategy = new UpdateStatementStrategy(user);
-        jdbcContext.update(statementStrategy);
+        Object[] params = new Object[] { user.getName(), user.getPassword(), user.getId()};
+        String sql = "update userinfo set name = ?, password = ? where id = ?";
+        jdbcContext.update(params, sql);
     }
 
     public void delete(Long id) throws SQLException {
-        StatementStrategy statementStrategy = new DeleteStatementStrategy(id);
-
-        jdbcContext.update(statementStrategy);
+        Object[] params = new Object[]{id};
+        String sql = "delete from userinfo where id = ?";
+        jdbcContext.update(params, sql);
     }
 
-    private User get(StatementStrategy statementStrategy) throws SQLException {
-
-
-        return jdbcContext.get(statementStrategy);
-    }
-
-    private void insert(User user, StatementStrategy statementStrategy) throws SQLException {
-        jdbcContext.insert(user, statementStrategy);
-    }
-
-    private void update(StatementStrategy statementStrategy) throws SQLException {
-        jdbcContext.update(statementStrategy);
-    }
 }

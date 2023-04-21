@@ -1,10 +1,7 @@
 package kr.ac.jejunu.user;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class JdbcContext {
     private final DataSource dataSource;
@@ -109,5 +106,39 @@ public class JdbcContext {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    void update(Object[] params, String sql) throws SQLException {
+        StatementStrategy statementStrategy = connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            for(int i = 0; i < params.length; i++){
+                preparedStatement.setObject(i+1, params[i]);
+            }
+            return preparedStatement;
+        };
+        update(statementStrategy);
+    }
+
+    void insert(User user, Object[] params, String sql) throws SQLException {
+        StatementStrategy statementStrategy = connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            for(int i = 0; i < params.length; i++){
+                preparedStatement.setObject(i+1, params[i]);
+            }
+            return preparedStatement;
+        };
+        insert(user, statementStrategy);
+    }
+
+    User get(Object[] params, String sql) throws SQLException {
+        StatementStrategy statementStrategy = connection -> {
+            PreparedStatement  preparedStatement = connection.prepareStatement(sql);
+            for(int i = 0; i < params.length; i++){
+                preparedStatement.setObject(i+1, params[i]);
+            }
+
+            return preparedStatement;
+        };
+        return get(statementStrategy);
     }
 }
